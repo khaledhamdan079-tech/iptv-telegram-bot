@@ -16,6 +16,9 @@ from state import get_state, set_state, clear_state
 
 logger = logging.getLogger(__name__)
 
+# Network/timeout errors: show a friendly "try again" message
+NETWORK_ERRORS = (httpx.ConnectError, httpx.ConnectTimeout, httpx.ReadTimeout)
+
 CHOICE_KEYBOARD = ReplyKeyboardMarkup(
     [["Movie", "Series"]],
     resize_keyboard=True,
@@ -116,10 +119,10 @@ async def _handle_movie_search(
 ) -> None:
     try:
         result = await search_movies(query)
-    except (httpx.ConnectError, httpx.ConnectTimeout) as e:
+    except NETWORK_ERRORS as e:
         logger.warning("Movie search connection failed: %s", e)
         await update.message.reply_text(
-            "Could not reach the server. Please check your internet connection and try again."
+            "The server could not be reached or took too long to respond. Please try again."
         )
         clear_state(chat_id)
         await update.message.reply_text(
@@ -193,10 +196,10 @@ async def _handle_movie_choice(
 
     try:
         url_result = await get_movie_stream_url(str(vod_id))
-    except (httpx.ConnectError, httpx.ConnectTimeout) as e:
+    except NETWORK_ERRORS as e:
         logger.warning("Get movie stream URL connection failed: %s", e)
         await update.message.reply_text(
-            "Could not reach the server. Please check your internet connection and try again."
+            "The server could not be reached or took too long to respond. Please try again."
         )
         clear_state(chat_id)
         await _offer_again(update)
@@ -224,10 +227,10 @@ async def _handle_series_search(
 ) -> None:
     try:
         result = await search_series(query)
-    except (httpx.ConnectError, httpx.ConnectTimeout) as e:
+    except NETWORK_ERRORS as e:
         logger.warning("Series search connection failed: %s", e)
         await update.message.reply_text(
-            "Could not reach the server. Please check your internet connection and try again."
+            "The server could not be reached or took too long to respond. Please try again."
         )
         clear_state(chat_id)
         await update.message.reply_text(
@@ -295,10 +298,10 @@ async def _handle_series_choice(
 
     try:
         info_result = await get_series_info(str(series_id))
-    except (httpx.ConnectError, httpx.ConnectTimeout) as e:
+    except NETWORK_ERRORS as e:
         logger.warning("Series info connection failed: %s", e)
         await update.message.reply_text(
-            "Could not reach the server. Please check your internet connection and try again."
+            "The server could not be reached or took too long to respond. Please try again."
         )
         clear_state(chat_id)
         await _offer_again(update)
@@ -376,10 +379,10 @@ async def _handle_episode_input(
             str(selected_season),
             str(episode_num),
         )
-    except (httpx.ConnectError, httpx.ConnectTimeout) as e:
+    except NETWORK_ERRORS as e:
         logger.warning("Episode stream URL connection failed: %s", e)
         await update.message.reply_text(
-            "Could not reach the server. Please check your internet connection and try again."
+            "The server could not be reached or took too long to respond. Please try again."
         )
         clear_state(chat_id)
         await _offer_again(update)
