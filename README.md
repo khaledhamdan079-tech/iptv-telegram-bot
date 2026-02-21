@@ -34,7 +34,10 @@ A Telegram bot that searches for movies and series using the IPTV backend API an
 
 **Important:** Only one instance of the bot can run per token. If you see `Conflict: terminated by other getUpdates request`, another process is already polling (e.g. the same bot running locally or in another Railway service). Stop all other instances and run the bot in a single place only.
 
-## Requirements
+ ## Requirements
 
 - Python 3.12+
 - `TELEGRAM_BOT_TOKEN` in the environment
+
+
+ 
