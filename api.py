@@ -1,4 +1,3 @@
-"""Async client for the IPTV backend Xtream API."""
 
 import httpx
 from config import IPTV_BASE_URL
